@@ -42,7 +42,7 @@ jobs:
           echo "PACKAGE_FILE=$(npm pack | tail -1)" >> $GITHUB_ENV
       - name: Upload Artifacts
         if: inputs.uploadBuild
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: ${{ env.PACKAGE_FILE }}
           path: ${{ env.PACKAGE_FILE }}
