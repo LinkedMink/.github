@@ -18,4 +18,4 @@ jobs:
       - name: Checkout Source
         uses: actions/checkout@v3
       - name: Validate GitHub Actions YML
-        run: yamllint .github/workflows/*.yml
+        run: yamllint -c yamllint-config.yaml .github/workflows/*.yml

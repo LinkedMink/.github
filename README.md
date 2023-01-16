@@ -10,5 +10,5 @@ This repo contains:
 ## Command Reference
 
 ```sh
-python -m yamllint .github/workflows/*.yml
+python -m yamllint -c yamllint-config.yaml .github/workflows/*.yml
 ```
