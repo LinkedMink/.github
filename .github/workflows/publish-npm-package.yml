@@ -1,0 +1,36 @@
+---
+name: Publish NPM Package
+
+# yamllint disable-line rule:truthy
+on:
+  workflow_call:
+    # inputs:
+    #   tag:
+    #     type: string
+    #     required: true
+    #     default: ""
+    #     description: "Upload built Bundle to Github tag"
+    secrets:
+      NODE_AUTH_TOKEN:
+        required: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v3
+      - name: Setup NodeJS 18
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: Install Dependencies
+        run: npm ci
+      - name: Publish to NPM Registry
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+      # - name: Publish
+      #   run: npm dist-tag add example-package@1.4.0 stable
+      #   env:
+      #     NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
