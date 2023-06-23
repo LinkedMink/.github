@@ -10,5 +10,8 @@ This repo contains:
 ## Command Reference
 
 ```sh
-python -m yamllint -c yamllint-config.yaml .github/workflows/*.yml
+pip install --user yamllint
+python -m yamllint -c yamllint-config.yaml \
+  .github/workflows/*.yml \
+  workflow-templates/nodejs/*.yml
 ```
