@@ -50,4 +50,4 @@ jobs:
         name: Output Result
         if: inputs.uploadBuild
         run: |
-          echo "::set-output name=uploadedBuildName::${PACKAGE_FILE}"
+          echo "uploadedBuildName=${PACKAGE_FILE}" >> $GITHUB_OUTPUT
