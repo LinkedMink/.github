@@ -15,6 +15,20 @@ on:
         required: false
         default: false
         description: "Upload distribution files to Github"
+      publish-package:
+        type: boolean
+        required: false
+        default: false
+        description: "Publish to NPM registry after build"
+      publish-registry-url:
+        type: string
+        required: false
+        default: "https://npm.pkg.github.com"
+        description: "NPM registry to use only for publishing"
+    secrets:
+      node-auth-token:
+        required: false
+        description: "Token to publish NPM packages, defaults to GITHUB_TOKEN"
     outputs:
       uploaded-build-name:
         description: "If a build is uploaded, this name will be output"
@@ -34,7 +48,9 @@ jobs:
       - name: Setup NodeJS
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ inputs.node-js-version }}
+          cache: "npm"
+          cache-dependency-path: 'package-lock.json'
+          node-version: "${{ inputs.node-js-version }}"
       - name: Install Dependencies
         run: npm ci
       - name: Build Source
@@ -59,3 +75,15 @@ jobs:
         if: inputs.upload-build
         run: |
           echo "uploaded-build-name=${PACKAGE_FILE}" >> $GITHUB_OUTPUT
+      - name: Setup NodeJS Publish
+        if: inputs.publish-package
+        uses: actions/setup-node@v4
+        with:
+          registry-url: "${{ inputs.publish-registry-url }}"
+      - name: Publish to NPM Registry
+        if: inputs.publish-package
+        run: |
+          npm publish 
+        # run: npm dist-tag add example-package@1.4.0 stable
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.node-auth-token || secrets.GITHUB_TOKEN }}
