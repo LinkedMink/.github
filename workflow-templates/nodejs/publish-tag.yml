@@ -13,5 +13,6 @@ jobs:
       upload-build: false
       publish-package: true
     #   publish-registry-url: "https://npm.pkg.github.com"
+    secrets: {}
     # secrets:
     #   node-auth-token: ${{ secrets.GITHUB_TOKEN }}

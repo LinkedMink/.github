@@ -9,7 +9,9 @@ on:
         type: string
         required: false
         default: "20"
-        description: "NodeJS version specifier (12.x, 10.15.1, >=10.15.0, lts/Hydrogen, 16-nightly, latest, node)"
+        description: >-
+          NodeJS version specifier (12.x, 10.15.1, >=10.15.0, lts/Hydrogen, 16-nightly,
+          latest, node)
       upload-build:
         type: boolean
         required: false
@@ -49,7 +51,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           cache: "npm"
-          cache-dependency-path: 'package-lock.json'
+          cache-dependency-path: "package-lock.json"
           node-version: "${{ inputs.node-js-version }}"
       - name: Install Dependencies
         run: npm ci
@@ -83,7 +85,7 @@ jobs:
       - name: Publish to NPM Registry
         if: inputs.publish-package
         run: |
-          npm publish 
+          npm publish
         # run: npm dist-tag add example-package@1.4.0 stable
         env:
           NODE_AUTH_TOKEN: ${{ secrets.node-auth-token || secrets.GITHUB_TOKEN }}
