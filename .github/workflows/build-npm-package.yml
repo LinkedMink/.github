@@ -5,28 +5,36 @@ name: Build NPM Package
 on:
   workflow_call:
     inputs:
-      uploadBuild:
+      node-js-version:
+        type: string
+        required: false
+        default: "20"
+        description: "NodeJS version specifier (12.x, 10.15.1, >=10.15.0, lts/Hydrogen, 16-nightly, latest, node)"
+      upload-build:
         type: boolean
         required: false
         default: false
         description: "Upload distribution files to Github"
     outputs:
-      uploadedBuildName:
+      uploaded-build-name:
         description: "If a build is uploaded, this name will be output"
         value: ${{ jobs.build.outputs.uploadedBuildName }}
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    concurrency:
+      group: build-${{ github.ref }}
+      cancel-in-progress: true
     outputs:
-      uploadedBuildName: ${{ steps.finish-output.outputs.uploadedBuildName }}
+      uploaded-build-name: ${{ steps.finish-output.outputs.uploaded-build-name }}
     steps:
       - name: Checkout Source
         uses: actions/checkout@v4
-      - name: Setup NodeJS 20
+      - name: Setup NodeJS
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: ${{ inputs.node-js-version }}
       - name: Install Dependencies
         run: npm ci
       - name: Lint Source
@@ -36,18 +44,18 @@ jobs:
       - name: Build Source
         run: npm run build
       - name: Package Artifacts
-        if: inputs.uploadBuild
+        if: inputs.upload-build
         run: |
           echo '::echo::on'
           echo "PACKAGE_FILE=$(npm pack | tail -1)" >> $GITHUB_ENV
       - name: Upload Artifacts
-        if: inputs.uploadBuild
+        if: inputs.upload-build
         uses: actions/upload-artifact@v4
         with:
           name: ${{ env.PACKAGE_FILE }}
           path: ${{ env.PACKAGE_FILE }}
       - id: finish-output
         name: Output Result
-        if: inputs.uploadBuild
+        if: inputs.upload-build
         run: |
-          echo "uploadedBuildName=${PACKAGE_FILE}" >> $GITHUB_OUTPUT
+          echo "uploaded-build-name=${PACKAGE_FILE}" >> $GITHUB_OUTPUT

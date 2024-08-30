@@ -1,16 +1,16 @@
 ---
-name: Publish NPM Package
+name: Push Docker Hub NPM Package
 
 # yamllint disable-line rule:truthy
 on:
   workflow_call:
     inputs:
-      imageScope:
+      image-scope:
         type: string
         required: true
         description: |
           For an image: [Registry]/?[Namespace]/[Image]:[Tag], The [Registry]/[Namespace]
-      uploadedBuildName:
+      uploaded-build-name:
         type: string
         required: true
         description: "Name associated with actions/upload-artifact"
@@ -27,12 +27,12 @@ jobs:
       - name: Debug Output
         run: |
           echo '::echo::on'
-          echo "${{ inputs.uploadedBuildName }}"
+          echo "${{ inputs.uploaded-build-name }}"
       - name: Download Artifacts
         id: download
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.uploadedBuildName }}
+          name: ${{ inputs.uploaded-build-name }}
           path: archive
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -45,7 +45,7 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Extract and Read Version
         run: |
-          tar --extract --verbose --file="archive/${{ inputs.uploadedBuildName }}"
+          tar --extract --verbose --file="archive/${{ inputs.uploaded-build-name }}"
           echo "VERSION=$(cd package && npm pkg get version | sed 's/"//g')" >> $GITHUB_ENV
       - name: Build and Push Image
         uses: docker/build-push-action@v4
@@ -56,9 +56,8 @@ jobs:
             linux/amd64
             linux/amd64/v3
             linux/arm64
-            linux/arm/v7
           context: ./package
           push: true
           tags: |
-            ${{ inputs.imageScope }}:latest
-            ${{ inputs.imageScope }}:$VERSION
+            ${{ inputs.image-scope }}:latest
+            ${{ inputs.image-scope }}:$VERSION

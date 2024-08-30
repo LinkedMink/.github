@@ -14,20 +14,20 @@ jobs:
   build:
     uses: LinkedMink/.github/.github/workflows/build-npm-package.yml@main
     with:
-      uploadBuild: true
+      upload-build: true
   publish-npm:
     needs: build
     environment:
       name: publish
     uses: LinkedMink/.github/.github/workflows/publish-npm-package.yml@main
     with:
-      uploadToTag: ${{ github.ref_name }}
-      uploadedBuildName: ${{ needs.build.outputs.uploadedBuildName }}
+      upload-to-tag: ${{ github.ref_name }}
+      uploaded-build-name: ${{ needs.build.outputs.uploaded-build-name }}
   publish-docker:
     needs: build
     environment:
       name: publish
     uses: LinkedMink/.github/.github/workflows/push-docker-hub-npm-package.yml@main
     with:
-      uploadToTag: ${{ github.ref_name }}
-      uploadedBuildName: ${{ needs.build.outputs.uploadedBuildName }}
+      upload-to-tag: ${{ github.ref_name }}
+      uploaded-build-name: ${{ needs.build.outputs.uploaded-build-name }}

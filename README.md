@@ -5,7 +5,8 @@
 This repo contains:
 
 - Default repo files
-- GitHub Actions
+- Reusable GitHub Actions Workflows
+  - Templates for Workflows
 
 ## Command Reference
 

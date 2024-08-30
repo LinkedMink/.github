@@ -10,7 +10,7 @@ on:
         required: false
         default: "latest"
         description: "Tag for the NPM package: package-name@latest, package-name@beta"
-      uploadedBuildName:
+      uploaded-build-name:
         type: string
         required: true
         description: "Name associated with actions/upload-artifact"
@@ -21,20 +21,23 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    concurrency:
+      group: publish-npm-package
+      cancel-in-progress: false
     steps:
       - name: Debug Output
         run: |
           echo '::echo::on'
-          echo "${{ inputs.uploadedBuildName }}"
+          echo "${{ inputs.uploaded-build-name }}"
       - name: Download Artifacts
         id: download
         uses: actions/download-artifact@v4
         with:
-          name: ${{ inputs.uploadedBuildName }}
+          name: ${{ inputs.uploaded-build-name }}
           path: archive
       - name: Publish to NPM Registry
         run: |
-          npm publish --tag "${{ inputs.tag }}" "archive/${{ inputs.uploadedBuildName }}"
+          npm publish --tag "${{ inputs.tag }}" "archive/${{ inputs.uploaded-build-name }}"
         # run: npm dist-tag add example-package@1.4.0 stable
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
