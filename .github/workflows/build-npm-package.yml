@@ -8,7 +8,7 @@ on:
       node-js-version:
         type: string
         required: false
-        default: "20"
+        default: "24"
         description: >-
           NodeJS version specifier (12.x, 10.15.1, >=10.15.0, lts/Hydrogen, 16-nightly,
           latest, node)
@@ -46,9 +46,9 @@ jobs:
       uploaded-build-name: ${{ steps.finish-output.outputs.uploaded-build-name }}
     steps:
       - name: Checkout Source
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
       - name: Setup NodeJS
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           cache: "npm"
           cache-dependency-path: "package-lock.json"
@@ -71,7 +71,7 @@ jobs:
           echo "PACKAGE_FILE=$(npm pack | tail -1)" >> $GITHUB_ENV
       - name: Upload Artifacts
         if: inputs.upload-build
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: ${{ env.PACKAGE_FILE }}
           path: ${{ env.PACKAGE_FILE }}
@@ -82,7 +82,7 @@ jobs:
           echo "uploaded-build-name=${PACKAGE_FILE}" >> $GITHUB_OUTPUT
       - name: Setup NodeJS Publish
         if: inputs.publish-package
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           registry-url: "${{ inputs.publish-registry-url }}"
       - name: Publish to NPM Registry
